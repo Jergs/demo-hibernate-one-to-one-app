@@ -10,13 +10,13 @@ public class BiDirectionalDemo {
 
     public static void main(String[] args) {
 
-        try (SessionFactory factory = new Configuration()
+        SessionFactory factory = new Configuration()
                 .configure()
                 .addAnnotatedClass(Instructor.class)
                 .addAnnotatedClass(InstructorDetail.class)
-                .buildSessionFactory()) {
+                .buildSessionFactory();
 
-            Session session = factory.openSession();
+        try (factory; Session session = factory.getCurrentSession()) {
             session.beginTransaction();
 
             int id = 1;
@@ -25,6 +25,8 @@ public class BiDirectionalDemo {
             System.out.println(instructor.getFirstName() + " " + instructor.getLastName());
 
             session.getTransaction().commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }
